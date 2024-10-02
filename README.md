@@ -1,34 +1,63 @@
+
 # LDNS (Local DNS)
 
-Ever wanted to stop looking IPs of the server you are managing? ldns is a simple shell script that was created
-out of the frustration of having to manage servers with no public DNS configured. This simple program will you to add/remove
-entry from the hosts file.
+LDNS is a simple yet powerful shell script designed to streamline server management by eliminating the need to manually look up IP addresses for servers without public DNS configurations. If you've ever found yourself frustrated with managing server connections by IP addresses alone, LDNS provides an efficient solution by allowing you to easily add or remove entries in your system's hosts file.
 
-`sudo ldns add <hostname> <IP>` allows you to reference the ip as <hostname> in your local machine.
+With LDNS, you can reference a server's IP address using a hostname on your local machine.
 
-Doing `sudo ldns add richclient.server 42.x.x.x` would make `ssh user@42.x.x.x` to `ssh user@42.x.x.x`
+## Key Features:
+- Add or remove hostnames for quick local reference.
+- Simplify SSH or other network connections by using hostnames instead of IP addresses.
+  
+For example, running the following command:
 
-## Usage
-
-### Add
-
-You can add an ip to hosts file using the following command
-`sudo ldns add <hostname> <IP>`
-
-```sh
+```bash
 sudo ldns add richclient.server 42.x.x.x
 ```
 
-### Remove
+will enable you to replace:
 
-To delete an entry
+```bash
+ssh user@42.x.x.x
+```
 
-`sudo ldns delete <hostname>`
+with:
 
-```sh
+```bash
+ssh user@richclient.server
+```
+
+## Usage
+
+### Add a Host
+To add a hostname to your system's hosts file, use the following command:
+
+```bash
+sudo ldns add <hostname> <IP>
+```
+
+Example:
+
+```bash
+sudo ldns add richclient.server 42.x.x.x
+```
+
+### Remove a Host
+To remove a previously added hostname from the hosts file, run:
+
+```bash
+sudo ldns delete <hostname>
+```
+
+Example:
+
+```bash
 sudo ldns delete richclient.server
 ```
 
-## How does it work?
+## How It Works
+LDNS modifies your system's `/etc/hosts` file by adding or removing entries that map hostnames to IP addresses. Since the `/etc/hosts` file requires elevated privileges to modify, the script must be executed with `sudo`.
 
-We add an entry to the hosts file in your local machine. This is the reason why we need sudo permission as well.
+---
+
+LDNS is a simple but effective tool that saves you time and effort when managing server connections locally.
