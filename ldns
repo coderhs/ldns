@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Ensure the script is run as root
+if [ "$EUID" -ne 0 ]; then
+  echo "This script requires root permissions. Please run with sudo."
+  exit 1
+fi
+
+# Check if sufficient arguments are passed
+if [ "$#" -lt 2 ]; then
+    echo "Usage:"
+    echo "$0 add <hostname> <IP>    - to add an entry"
+    echo "$0 delete <hostname>      - to delete an entry"
+    exit 1
+fi
+
+ACTION=$1
+HOSTNAME=$2
+IP=$3
+
+# Validate the IP address format (basic validation)
+if [[ $ACTION == "add" && ! $IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    echo "Error: Invalid IP address format."
+    exit 1
+fi
+
+case $ACTION in
+    add)
+        if [ -z "$HOSTNAME" ] || [ -z "$IP" ]; then
+            echo "Error: IP and hostname required to add an entry."
+            echo "Usage: $0 add <hostname> <IP>"
+            exit 1
+        fi
+
+        # Check if the hostname already exists
+        if grep -q "$HOSTNAME" /etc/hosts; then
+            echo "$HOSTNAME already exists in /etc/hosts."
+        else
+            # Add the new entry
+            echo "$IP $HOSTNAME" | tee -a /etc/hosts > /dev/null
+            echo "$HOSTNAME added to /etc/hosts."
+        fi
+        ;;
+
+    delete)
+        if [ -z "$HOSTNAME" ]; then
+            echo "Error: Hostname required to delete an entry."
+            echo "Usage: $0 delete <hostname>"
+            exit 1
+        fi
+
+        # Check if the hostname exists
+        if grep -q "$HOSTNAME" /etc/hosts; then
+            # Remove the line containing the hostname
+            sed -i "/$HOSTNAME/d" /etc/hosts
+            echo "$HOSTNAME removed from /etc/hosts."
+        else
+            echo "$HOSTNAME not found in /etc/hosts."
+        fi
+        ;;
+
+    *)
+        echo "Invalid action. Use 'add' or 'delete'."
+        echo "Usage:"
+        echo "$0 add <hostname> <IP>    - to add an entry"
+        echo "$0 delete <hostname>      - to delete an entry"
+        exit 1
+        ;;
+esac
