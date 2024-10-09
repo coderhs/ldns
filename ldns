@@ -7,10 +7,11 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Check if sufficient arguments are passed
-if [ "$#" -lt 2 ]; then
+if [ "$#" -lt 1 ]; then
     echo "Usage:"
     echo "$0 add <hostname> <IP>    - to add an entry"
     echo "$0 delete <hostname>      - to delete an entry"
+    echo "$0 list                   - to list all entries"
     exit 1
 fi
 
@@ -59,11 +60,17 @@ case $ACTION in
         fi
         ;;
 
+    list)
+        echo "Listing all hostnames in /etc/hosts:"
+        awk '/^[^#]/ && NF >= 2 {print $2}' /etc/hosts
+        ;;
+
     *)
         echo "Invalid action. Use 'add' or 'delete'."
         echo "Usage:"
         echo "$0 add <hostname> <IP>    - to add an entry"
         echo "$0 delete <hostname>      - to delete an entry"
+        echo "$0 list                   - to list all entries"
         exit 1
         ;;
 esac

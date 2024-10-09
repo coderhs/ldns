@@ -55,8 +55,14 @@ Example:
 sudo ldns delete richclient.server
 ```
 
-## How It Works
-LDNS modifies your system's `/etc/hosts` file by adding or removing entries that map hostnames to IP addresses. Since the `/etc/hosts` file requires elevated privileges to modify, the script must be executed with `sudo`.
+### List
+
+List all the hostname in `/etc/hosts`
+
+```sh
+sudo ldns list
+```
+
 
 ---
 
